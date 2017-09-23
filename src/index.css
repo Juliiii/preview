@@ -1,5 +1,46 @@
-h1 {
-  color: yellow;
-  display: flex;
-  align-items: center;
+.preview-wrapper {
+  position: absolute;
+  left: 0;
+  top: 0;
+  background-color: black;
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
 }
+
+.preview-innerWrapper {
+  height: 100%;
+}
+
+.img-wrapper {
+  position: absolute;
+  top: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+}
+
+.ratio,
+.icon-close {
+  position: absolute;
+  top: 60px;
+  color: #fff;
+}
+
+.ratio {
+  right: 5%;
+  font-size: 30pt;
+}
+
+.icon-close {
+  left: 5%;
+  font-size: 36pt;
+}
+
+.img {
+  width: 90%;
+}
+
+
+@import url('//at.alicdn.com/t/font_425490_k9piwgj0rrckrzfr.css');

@@ -18,6 +18,11 @@ module.exports = {
   module: {
     rules: [
       {
+        test: /\.js$/,
+        loader: 'babel-loader',
+        include: resolve('../src')
+      },
+      {
         test: /\.css$/,
         use: [
           'style-loader',

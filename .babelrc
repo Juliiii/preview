@@ -1,0 +1,9 @@
+{
+  "presets": [
+    ["env", {
+      "targets": {
+        "browsers": ["last 20 versions", "ios >= 5", "android >= 2.3", "not ie <= 8"]
+      }
+    }]
+  ]
+}
