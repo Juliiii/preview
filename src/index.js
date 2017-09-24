@@ -126,6 +126,9 @@ function init (srcs) {
 
 function destory (e) {
   instance.removeEventListener('click', () => {});
+  instance.removeEventListener('touchstart', () => {});
+  instance.removeEventListener('touchmove', () => {});
+  instance.removeEventListener('touchend', () => {});
   close.removeEventListener('click', () => {});
   father.removeChild(instance);
   e.stopPropagation();
@@ -171,8 +174,3 @@ function bindEvent () {
 
   close.addEventListener('click', destory);
 }
-
-
-
-
-preview();
