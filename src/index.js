@@ -10,10 +10,12 @@ let total;
 let clientWidth;
 let startX;
 let endX;
-let defaultSrcs = ['http://wx1.sinaimg.cn/mw690/005JtfT5ly1fjswr0d89kj32ao328qv6.jpg', 'http://wx1.sinaimg.cn/mw690/005JtfT5ly1fjswr6uy2rj32ao328b2g.jpg'];
+let pre_endX;
+let defaultSrcs = ['http://wx1.sinaimg.cn/mw690/005JtfT5ly1fjswr0d89kj32ao328qv6.jpg', 'http://wx4.sinaimg.cn/mw690/77f43791ly1fjudwfb70rj22912l1hdv.jpg', 'http://wx1.sinaimg.cn/mw690/005JtfT5ly1fjswr6uy2rj32ao328b2g.jpg'];
 let speed = 40;
+let lock = false;
 
-function preview (srcs = defaultSrcs) {
+export default function preview (srcs = defaultSrcs) {
   // 初始化
   init(srcs);
 
@@ -68,42 +70,47 @@ function createImgs (srcs) {
 }
 
 function slide (dir) {
-  if (dir === 'pre') {
-    animate(current, 0 - speed, 0);
-    animate(current - 1, 0 - speed, clientWidth);
-    if (current !== 1) {
-      for (let i = 0; i < current - 1; i++) {
-        imgs[i].style.left = `${(i + 1 - current) * clientWidth}px`;
+  Promise.all([
+    animate(dir, current - 1, speed, 0),
+    animate(dir, dir === 'pre' ? current : current - 2, speed, dir === 'pre' ? clientWidth : -clientWidth)
+  ]).then(() => {
+    const offset = dir === 'pre' ? clientWidth : -clientWidth;
+    for (let i = 0; i < total; i++) {
+      if ((dir === 'pre' && i !== current && i !== current - 1) || 
+          (dir === 'next' && i !== current - 2 && i !== current - 1)) {
+        imgs[i].style.left = `${parseInt(imgs[i].style.left) + offset}px`;
       }
-    }
-    for (i = current + 1; i < imgs.length; i++) {
-      imgs[i].style.left = `${(i + 1 - current) * clientWidth}px`;
-    }
-  } else {
-    animate(current, speed, 0);
-    animate(current - 1, speed, 0 - clientWidth);
-    if (current !== 1) {
-      for (let i = 0; i < current - 1; i++) {
-        imgs[i].style.left = `${(i + 1 - current) * clientWidth}px`;
-      }
-    }
-    for (i = current + 1; i < imgs.length; i++) {
-      imgs[i].style.left = `${(i + 1 - current) * clientWidth}px`;
-    }    
-  }
+    }      
+  });
 }
 
-function animate (index ,offset, boundary) {
-  const elem = imgs[index - 1];
-  let timeId = setInterval(() => {
-    const left = parseInt(elem.style.left);
-    if (left + offset >= boundary) {
-      elem.style.left = `${boundary}px`;
-      clearInterval(timeId);
-    } else {
-      elem.style.left = `${left + offset}px`;
+function animate (dir, index , offset, boundary) {
+  return new Promise (resolve => {
+    const elem = imgs[index];
+    if (dir === 'pre') {
+      let timeId = setInterval(() => {
+        const left = parseInt(elem.style.left);
+        if (left + offset >= boundary) {
+          elem.style.left = `${boundary}px`;
+          clearInterval(timeId);
+          resolve();
+        } else {
+          elem.style.left = `${left + offset}px`;
+        }
+      }, 20);
+    } else if (dir === 'next') {
+      let timeId = setInterval(() => {
+        const left = parseInt(elem.style.left);
+        if (left - offset <= boundary) {
+          elem.style.left = `${boundary}px`;
+          clearInterval(timeId);
+          resolve();
+        } else {
+          elem.style.left = `${left - offset}px`;
+        }
+      }, 10);    
     }
-  }, 10);  
+  });
 }
 
 function init (srcs) {
@@ -131,21 +138,37 @@ function bindEvent () {
   instance.addEventListener('click', destory);
   instance.addEventListener('touchstart', (e) => {
     startX = e.targetTouches[0].pageX;
+    pre_endX = endX = null;
   });
   instance.addEventListener('touchmove', (e) => {
+    pre_endX = endX === null ? e.targetTouches[0].pageX : endX;
     endX = e.targetTouches[0].pageX;
+    const offset = endX - pre_endX;
+    const dir = endX - startX;
+    if ((dir > 0 && current === 1) || 
+        (dir < 0 && current === total)) return;
+    if (lock) return;
+    lock = true;
+    if (dir < 0) {
+      imgs[current - 1].style.left = `${parseInt(imgs[current - 1].style.left) + offset}px`;
+      imgs[current].style.left = `${parseInt(imgs[current].style.left) + offset}px`;
+    } else {
+      imgs[current - 1].style.left = `${parseInt(imgs[current - 1].style.left) + offset}px`;      
+      imgs[current - 2].style.left = `${parseInt(imgs[current - 2].style.left) + offset}px`;
+    }
+    lock = false;
   });
   instance.addEventListener('touchend', (e) => {
-    if (endX > startX && endX > startX + 20) {
+    if (endX === null) return;
+    if (endX > startX && endX > startX + 40) {
       if (current === 1) return;
       current--;
       slide('pre');
-    } else if (endX < startX && endX < startX + 20) {
+    } else if (endX < startX && endX < startX + 40) {
       if (current === imgs.length) return;
       current++;
       slide('next');
     }
-    console.log(current)
     ratio.innerText = `${current}/${total}`;
   });
   close.addEventListener('click', destory);
