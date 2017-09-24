@@ -12,8 +12,7 @@ let startX;
 let endX;
 let pre_endX;
 let defaultSrcs = ['http://wx1.sinaimg.cn/mw690/005JtfT5ly1fjswr0d89kj32ao328qv6.jpg', 'http://wx4.sinaimg.cn/mw690/77f43791ly1fjudwfb70rj22912l1hdv.jpg', 'http://wx1.sinaimg.cn/mw690/005JtfT5ly1fjswr6uy2rj32ao328b2g.jpg'];
-let speed = 40;
-let lock = false;
+let speed = 25;
 
 export default function preview (srcs = defaultSrcs) {
   // 初始化
@@ -136,28 +135,28 @@ function destory (e) {
 
 function bindEvent () {
   instance.addEventListener('click', destory);
+  
   instance.addEventListener('touchstart', (e) => {
     startX = e.targetTouches[0].pageX;
-    pre_endX = endX = null;
   });
+
   instance.addEventListener('touchmove', (e) => {
-    pre_endX = endX === null ? e.targetTouches[0].pageX : endX;
     endX = e.targetTouches[0].pageX;
-    const offset = endX - pre_endX;
     const dir = endX - startX;
     if ((dir > 0 && current === 1) || 
         (dir < 0 && current === total)) return;
-    if (lock) return;
-    lock = true;
+    const next_currentLeft = dir < 0 ? parseInt(imgs[current - 1].style.left) - speed : parseInt(imgs[current - 1].style.left) + speed;
+    if ((dir < 0 && next_currentLeft <= -clientWidth) ||
+        (dir > 0 && next_currentLeft >= clientWidth)) return;
     if (dir < 0) {
-      imgs[current - 1].style.left = `${parseInt(imgs[current - 1].style.left) + offset}px`;
-      imgs[current].style.left = `${parseInt(imgs[current].style.left) + offset}px`;
+      imgs[current - 1].style.left = `${parseInt(imgs[current - 1].style.left) - speed}px`;
+      imgs[current].style.left = `${parseInt(imgs[current].style.left) - speed}px`;
     } else {
-      imgs[current - 1].style.left = `${parseInt(imgs[current - 1].style.left) + offset}px`;      
-      imgs[current - 2].style.left = `${parseInt(imgs[current - 2].style.left) + offset}px`;
+      imgs[current - 1].style.left = `${parseInt(imgs[current - 1].style.left) + speed}px`;      
+      imgs[current - 2].style.left = `${parseInt(imgs[current - 2].style.left) + speed}px`;
     }
-    lock = false;
   });
+
   instance.addEventListener('touchend', (e) => {
     if (endX === null) return;
     if (endX > startX && endX > startX + 40) {
@@ -171,6 +170,7 @@ function bindEvent () {
     }
     ratio.innerText = `${current}/${total}`;
   });
+
   close.addEventListener('click', destory);
 }
 
