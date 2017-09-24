@@ -10,11 +10,9 @@ let total;
 let clientWidth;
 let startX;
 let endX;
-let pre_endX;
-let defaultSrcs = ['http://wx1.sinaimg.cn/mw690/005JtfT5ly1fjswr0d89kj32ao328qv6.jpg', 'http://wx4.sinaimg.cn/mw690/77f43791ly1fjudwfb70rj22912l1hdv.jpg', 'http://wx1.sinaimg.cn/mw690/005JtfT5ly1fjswr6uy2rj32ao328b2g.jpg'];
 let speed = 25;
 
-export default function preview (srcs = defaultSrcs) {
+export default function preview (srcs) {
   // 初始化
   init(srcs);
 
@@ -135,7 +133,7 @@ function destory (e) {
 
 function bindEvent () {
   instance.addEventListener('click', destory);
-  
+
   instance.addEventListener('touchstart', (e) => {
     startX = e.targetTouches[0].pageX;
   });
