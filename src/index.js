@@ -11,13 +11,13 @@ let clientWidth;
 let startX;
 let endX;
 let speed = 25;
-
-export default function preview (srcs) {
+let defaultSrcs = ['http://wx3.sinaimg.cn/mw690/7eca0c01gy1fjtjrnj23aj20j60dfwgb.jpg', 'http://wx3.sinaimg.cn/mw690/7eca0c01gy1fjtjro6nvgj20j60p8whg.jpg'];
+export default function preview (srcs = defaultSrcs) {
   // 初始化
   init(srcs);
 
   let elem = instance = document.createElement('div');
-  elem.setAttribute('class', 'preview-wrapper');
+  elem.setAttribute('class', 'preview-wrapper animated zoomIn');
 
   // 右上角的当前图片 / 所有图片
   ratio = document.createElement('div');
@@ -40,7 +40,7 @@ export default function preview (srcs) {
 }
 
 function createImgs (srcs) {
-  if (!srcs.length) return;
+  if (!srcs.length) throw new Error('srcs should not be empty');
 
   let wrapper = document.createElement('div');
   wrapper.setAttribute('class', 'preview-innerWrapper');
@@ -125,13 +125,14 @@ function init (srcs) {
 }
 
 function destory (e) {
+  instance.setAttribute('class', 'preview-wrapper animated zoomOut');
   instance.removeEventListener('click', () => {});
   instance.removeEventListener('touchstart', () => {});
   instance.removeEventListener('touchmove', () => {});
   instance.removeEventListener('touchend', () => {});
   close.removeEventListener('click', () => {});
-  father.removeChild(instance);
   e.stopPropagation();
+  setTimeout(() => father.removeChild(instance), 500);
 }
 
 function bindEvent () {
@@ -174,3 +175,5 @@ function bindEvent () {
 
   close.addEventListener('click', destory);
 }
+
+preview();
