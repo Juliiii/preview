@@ -1,8 +1,8 @@
 {
-  "name": "preview",
+  "name": "previewjs",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "a plugin to preview the images",
+  "main": "dist/main.js",
   "dependencies": {},
   "devDependencies": {
     "autoprefixer": "^7.1.4",

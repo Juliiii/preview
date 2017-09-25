@@ -11,6 +11,7 @@ let clientWidth;
 let startX;
 let endX;
 let speed = 25;
+let defaultSrcs = [];
 
 export default function preview (srcs = defaultSrcs) {
   // 初始化

@@ -9,7 +9,7 @@ function resolve (url) {
 module.exports = {
   entry: resolve('../src/index.js'),
   output: {
-    filename: 'bundle.[hash].js',
+    filename: 'main.js',
     path: resolve('../dist')
   },
   resolve: {
@@ -26,14 +26,14 @@ module.exports = {
         test: /\.css$/,
         use: [
           'style-loader',
-          'css-loader',
+          { loader: 'css-loader', options: { minimize: true }},
           { loader: 'postcss-loader', options: require('./postcss.config') }
         ]
       }
     ]
   },
   plugins: [
-    new CleanWepackPlugin(['dist']),
+    new CleanWepackPlugin(['dist'], { root: resolve('..') }),
     new HtmlWepackPlugin(),
   ]
 };
