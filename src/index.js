@@ -11,7 +11,7 @@ let clientWidth;
 let startX;
 let endX;
 let speed = 25;
-let defaultSrcs = ['http://wx3.sinaimg.cn/mw690/7eca0c01gy1fjtjrnj23aj20j60dfwgb.jpg', 'http://wx3.sinaimg.cn/mw690/7eca0c01gy1fjtjro6nvgj20j60p8whg.jpg'];
+
 export default function preview (srcs = defaultSrcs) {
   // 初始化
   init(srcs);
@@ -130,7 +130,6 @@ function destory (e) {
   instance.removeEventListener('touchstart', () => {});
   instance.removeEventListener('touchmove', () => {});
   instance.removeEventListener('touchend', () => {});
-  close.removeEventListener('click', () => {});
   e.stopPropagation();
   setTimeout(() => father.removeChild(instance), 500);
 }
@@ -172,8 +171,4 @@ function bindEvent () {
     }
     ratio.innerText = `${current}/${total}`;
   });
-
-  close.addEventListener('click', destory);
 }
-
-preview();
