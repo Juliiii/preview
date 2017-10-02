@@ -6,6 +6,7 @@
   height: 100%;
   width: 100%;
   overflow: hidden;
+  z-index: 19960506;
 }
 
 .preview-innerWrapper {
