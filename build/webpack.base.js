@@ -10,7 +10,9 @@ module.exports = {
   entry: resolve('../src/index.js'),
   output: {
     filename: 'main.js',
-    path: resolve('../dist')
+    path: resolve('../dist'),
+    libraryTarget: 'umd',
+    library: 'previewjs'
   },
   resolve: {
     extensions: ['.js', '.css']
