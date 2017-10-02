@@ -1,6 +1,6 @@
 {
   "name": "previewjs",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "a plugin to preview the images",
   "main": "./dist/main.js",
   "dependencies": {},
